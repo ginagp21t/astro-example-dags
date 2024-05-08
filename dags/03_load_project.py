@@ -8,7 +8,7 @@ from datetime import  timedelta
 ## variables globales
 location='US'
 project_id='premium-guide-410714'
-conexion_gcp='conexion_gcp'
+conexion_gcp='conexion_gcp_file'
 
 ## Definimos los argumentos para los dag's
 default_args = {
