@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 from airflow.operators.http_operator import SimpleHttpOperator
-from airflow.providers.google.cloud.hooks.base import GoogleCloudBaseHook
+#from airflow.providers.google.cloud.hooks.base import GoogleCloudBaseHook
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
 from google.auth import default
