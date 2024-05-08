@@ -1,11 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
-#from airflow.providers.google.cloud.operators.dataflow import DataflowStartFlexTemplateOperator
-#from airflow.contrib.operators.dataflow_operator import  DataflowTemplateOperator
-from airflow.providers.google.cloud.operators.dataflow import (
-    DataflowTemplatedJobStartOperator,
-)
+from airflow.operators.http_operator import SimpleHttpOperator
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
 
@@ -48,20 +44,16 @@ with DAG(
         dag=dag
     )
 
-    run_dataflow_job = DataflowTemplatedJobStartOperator(
-        task_id='run_dataflow_job',
-        job_name='job-ingesta-firestore',
-        parameters={
-            'gcsLocation': 'gs://dataflow-templates-southamerica-west1/latest/Firestore_to_GCS_Text',
-            'region': 'southamerica-west1',
-            'parameters': {
-                'firestoreReadGqlQuery': 'SELECT * FROM transacciones',
-                'firestoreReadProjectId': '{{ var.value.project_id }}',  # O proporciona tu PROJECT_ID directamente
-                'textWritePrefix': 'gs://{{ var.value.project_id }}-datalake-dev/firestore/transacciones'
-            }
+    step_sunat_tip_cambio = SimpleHttpOperator(
+        task_id='step_sunat_tip_cambio',
+        http_conn_id='http_default',  # O el ID de tu conexión HTTP si has configurado una personalizada
+        method='POST',
+        endpoint='https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
+        headers={
+            "Authorization": "bearer {{ gcp_token }}",
+            "Content-Type": "application/json"
         },
-        project_id=project_id,  # Reemplaza con tu PROJECT_ID
-        gcp_conn_id=conexion_gcp,
+        data='{"load_type": "storage","target":"gs://test-nh/tipo_cambio.csv"}'
     )
     
     step_raw_tipo_cambio =BigQueryInsertJobOperator(
@@ -77,4 +69,4 @@ with DAG(
         python_callable=end_process,
         dag=dag
     )
-    step_start>>step_raw_tipo_cambio>>step_raw_tipo_cambio>>step_end
+    step_start>>step_sunat_tip_cambio>>step_raw_tipo_cambio>>step_end
