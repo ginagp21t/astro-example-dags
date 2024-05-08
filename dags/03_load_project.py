@@ -9,6 +9,7 @@ from airflow.utils.dates import days_ago
 from datetime import  timedelta
 from google.auth import default
 from google.auth.transport.requests import Request
+from google.auth.transport import requests
 
 
 ## variables globales
