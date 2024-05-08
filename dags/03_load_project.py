@@ -1,7 +1,8 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
-from airflow.providers.google.cloud.operators.dataflow import DataflowStartFlexTemplateOperator
+#from airflow.providers.google.cloud.operators.dataflow import DataflowStartFlexTemplateOperator
+from airflow.contrib.operators.dataflow_operator import DataflowTemplateOperator
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
 
@@ -53,7 +54,7 @@ with DAG(
         location=location,
         force_rerun=True
         )
-    run_dataflow_job = DataflowStartFlexTemplateOperator(
+    run_dataflow_job = DataflowTemplateOperator(
         task_id='run_dataflow_job',
         job_name='job-ingesta-firestore',
         parameters={
