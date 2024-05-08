@@ -21,9 +21,7 @@ default_args = {
     'owner': 'LuisM',
     'depends_on_past': False,
     'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=1),
+    'email_on_retry': False
 }
 
 def get_gcp_token():
@@ -64,8 +62,7 @@ with DAG(
     step_sunat_tip_cambio = BashOperator(
         task_id="step_sunat_tip_cambio",
         ##bash_command="ls -alh --color=always / && echo https://airflow.apache.org/  && echo 'some <code>html</code>'",
-        ##bash_command='curl -m 70 -X POST https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio -H "Authorization: bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" '
-        bash_command='gcloud auth list'
+        bash_command='curl -m 70 -X POST https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio -H "Authorization: bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" '
     )   
   
     step_raw_tipo_cambio =BigQueryInsertJobOperator(
