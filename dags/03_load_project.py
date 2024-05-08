@@ -29,7 +29,9 @@ default_args = {
 def get_gcp_token():
     credentials, _ = default()
     if credentials.expired:
+        print( credentials)
         credentials.refresh(Request())
+        
     return credentials.token
     
 def start_process():
