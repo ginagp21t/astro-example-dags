@@ -43,14 +43,15 @@ with DAG(
         dag=dag
     )
 
-    step_raw_tipo_cambio = BigQueryOperator(
-        task_id='step_raw_tipo_cambio',
-        sql='CALL `raw_ventas.sp_load_ba_itc_audience_contact`()',
-        use_legacy_sql=False,
-        gcp_conn_id=conexion_gcp,  # Debes configurar tu conexión de GCP en Airflow
-        location=location,  # La ubicación de tu procedimiento en BigQuery (por ejemplo, US)
-        dag=dag
-    )
+
+    step_raw_tipo_cambio =BigQueryInsertJobOperator(
+        task_id= 'step_raw_tipo_cambio' ,
+        #trigger_rule=TriggerRule.ALL_DONE,  
+        configuration={"query": {"query": "CALL `raw_ventas.sp_load_ba_itc_audience_contact`()", "useLegacySql": False,}}, 
+        gcp_conn_id=conexion_gcp,  
+        location=location,
+        force_rerun=True
+        )
     step_end = PythonOperator(
         task_id='step_end_id',
         python_callable=end_process,
