@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 from airflow.operators.http_operator import SimpleHttpOperator
+from airflow.providers.http.operators.http import HttpOperator
 #from airflow.providers.google.cloud.hooks.base import GoogleCloudBaseHook
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
@@ -58,15 +59,15 @@ with DAG(
     )
     
 
-    step_sunat_tip_cambio = SimpleHttpOperator(
-        task_id='step_sunat_tip_cambio',
-        method='POST',
-        endpoint='https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
-        headers={
-            "Authorization": f"Bearer {gcp_token}",
-            "Content-Type": "application/json"
-        },
-        data='{"load_type": "storage","target":"gs://test-nh/tipo_cambio.csv"}'
+    step_sunat_tip_cambio = HttpOperator(
+    task_id="step_sunat_tip_cambio",
+    method="POST",
+    endpoint='https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
+    data='{"load_type": "storage","target":"gs://test-nh/tipo_cambio.csv"}',
+    headers={
+        "Authorization": f"Bearer {gcp_token}",
+        "Content-Type": "application/json"},
+    dag=dag
     )
     
     step_raw_tipo_cambio =BigQueryInsertJobOperator(
