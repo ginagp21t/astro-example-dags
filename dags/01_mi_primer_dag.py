@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 def start_process():
-    print(" INICIO EL PROCESO!")
+    print(" INICIO EL PROCESO!!!")
 
 def load():
     print(" Hola Airflow!")
