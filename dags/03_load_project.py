@@ -34,6 +34,10 @@ def get_gcp_token():
     
 def start_process():
     print(" INICIO EL PROCESO!")
+    credentials, _ = default()
+    if credentials.expired:
+        print( credentials)
+    print(" INICIO EL PROCESO!")
 
 def end_process():
     print(" FIN DEL PROCESO!")
