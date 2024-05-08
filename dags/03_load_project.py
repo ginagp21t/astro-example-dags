@@ -27,7 +27,6 @@ default_args = {
 def get_gcp_token():
     credentials, _ = default()
     if credentials.expired:
-        print( credentials)
         credentials.refresh(Request())
         
     return credentials.token
@@ -35,8 +34,10 @@ def get_gcp_token():
 def start_process():
     print(" INICIO EL PROCESO!")
     credentials, _ = default()
-    if credentials.expired:
-        print( credentials)
+    if credentials.id_token:
+    # Extraer el correo electrónico de la cuenta de usuario asociada al token de identificación
+        usuario_gcp = credentials.id_token['email']
+        print("El usuario actual de Google Cloud Platform es:", usuario_gcp)
     print(" INICIO EL PROCESO!")
 
 def end_process():
