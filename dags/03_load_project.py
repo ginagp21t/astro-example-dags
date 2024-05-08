@@ -4,6 +4,7 @@ from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobO
 from airflow.operators.http_operator import SimpleHttpOperator
 from airflow.providers.http.operators.http import HttpOperator
 #from airflow.providers.google.cloud.hooks.base import GoogleCloudBaseHook
+from airflow.operators.bash import BashOperator
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
 from google.auth import default
@@ -57,8 +58,12 @@ with DAG(
         python_callable=start_process,
         dag=dag
     )
-    
-
+   
+    step_sunat_tip_cambio = BashOperator(
+        task_id="step_sunat_tip_cambio",
+        bash_command="ls -alh --color=always / && echo https://airflow.apache.org/  && echo 'some <code>html</code>'",
+    )   
+'''
     step_sunat_tip_cambio = HttpOperator(
     task_id="step_sunat_tip_cambio",
     method="POST",
@@ -71,7 +76,7 @@ with DAG(
     xcom_push=True,
     dag=dag
     )
-    
+'''    
     step_raw_tipo_cambio =BigQueryInsertJobOperator(
         task_id= 'step_raw_tipo_cambio' ,
         #trigger_rule=TriggerRule.ALL_DONE,  
