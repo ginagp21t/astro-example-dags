@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 #from airflow.providers.google.cloud.operators.dataflow import DataflowStartFlexTemplateOperator
-from airflow.contrib.operators.dataflow_operator import DataflowTemplateOperator
+from airflow.contrib.operators.dataflow_operator import  DataflowTemplateOperator
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
 
