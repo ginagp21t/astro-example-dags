@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 from airflow.operators.http_operator import SimpleHttpOperator
+from airflow.providers.google.cloud.hooks.base import GoogleCloudBaseHook
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
 
@@ -43,14 +44,18 @@ with DAG(
         python_callable=start_process,
         dag=dag
     )
-
+    
+    # Obtener el token de identidad de GCP
+    gcp_hook = GoogleCloudBaseHook(gcp_conn_id='google_cloud_default')
+    gcp_token = gcp_hook._get_credentials().token
+    
     step_sunat_tip_cambio = SimpleHttpOperator(
         task_id='step_sunat_tip_cambio',
         http_conn_id='http_default',  # O el ID de tu conexión HTTP si has configurado una personalizada
         method='POST',
         endpoint='https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
         headers={
-            "Authorization": "bearer $(gcloud auth print-identity-token)",
+            "Authorization": f"Bearer {gcp_token}",
             "Content-Type": "application/json"
         },
         data='{"load_type": "storage","target":"gs://test-nh/tipo_cambio.csv"}'
