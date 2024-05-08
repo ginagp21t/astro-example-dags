@@ -48,7 +48,22 @@ with DAG(
         dag=dag
     )
 
-
+    run_dataflow_job = DataflowTemplatedJobStartOperator(
+        task_id='run_dataflow_job',
+        job_name='job-ingesta-firestore',
+        parameters={
+            'gcsLocation': 'gs://dataflow-templates-southamerica-west1/latest/Firestore_to_GCS_Text',
+            'region': 'southamerica-west1',
+            'parameters': {
+                'firestoreReadGqlQuery': 'SELECT * FROM transacciones',
+                'firestoreReadProjectId': '{{ var.value.project_id }}',  # O proporciona tu PROJECT_ID directamente
+                'textWritePrefix': 'gs://{{ var.value.project_id }}-datalake-dev/firestore/transacciones'
+            }
+        },
+        project_id=project_id,  # Reemplaza con tu PROJECT_ID
+        gcp_conn_id=conexion_gcp,
+    )
+    
     step_raw_tipo_cambio =BigQueryInsertJobOperator(
         task_id= 'step_raw_tipo_cambio' ,
         #trigger_rule=TriggerRule.ALL_DONE,  
@@ -62,4 +77,4 @@ with DAG(
         python_callable=end_process,
         dag=dag
     )
-    step_start>>run_dataflow_job>>step_raw_tipo_cambio>>step_end
+    step_start>>step_raw_tipo_cambio>>step_raw_tipo_cambio>>step_end
