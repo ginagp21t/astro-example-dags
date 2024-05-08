@@ -62,11 +62,13 @@ with DAG(
     step_sunat_tip_cambio = HttpOperator(
     task_id="step_sunat_tip_cambio",
     method="POST",
-    endpoint='https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
+    http_conn_id='http_default',
+    endpoint='us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
     data='{"load_type": "storage","target":"gs://test-nh/tipo_cambio.csv"}',
     headers={
         "Authorization": f"Bearer {gcp_token}",
         "Content-Type": "application/json"},
+    xcom_push=True,
     dag=dag
     )
     
