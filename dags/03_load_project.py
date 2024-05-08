@@ -5,6 +5,8 @@ from airflow.operators.http_operator import SimpleHttpOperator
 from airflow.providers.google.cloud.hooks.base import GoogleCloudBaseHook
 from airflow.utils.dates import days_ago
 from datetime import  timedelta
+from google.auth import default
+from google.auth.transport.requests import Request
 
 
 ## variables globales
@@ -22,7 +24,11 @@ default_args = {
     'retry_delay': timedelta(minutes=1),
 }
 
-
+def get_gcp_token():
+    credentials, _ = default()
+    if credentials.expired:
+        credentials.refresh(Request())
+    return credentials.token
     
 def start_process():
     print(" INICIO EL PROCESO!")
@@ -39,16 +45,19 @@ with DAG(
     start_date=days_ago(1), 
     default_args=default_args
 ) as dag:
+
+#    Obtener el token de identidad de GCP
+#    gcp_hook = GoogleCloudBaseHook(gcp_conn_id='google_cloud_default')
+#    gcp_token = gcp_hook._get_credentials().token
+    gcp_token = get_gcp_token()
+    
     step_start = PythonOperator(
         task_id='step_start_id',
         python_callable=start_process,
         dag=dag
     )
     
-    # Obtener el token de identidad de GCP
-    gcp_hook = GoogleCloudBaseHook(gcp_conn_id='google_cloud_default')
-    gcp_token = gcp_hook._get_credentials().token
-    
+
     step_sunat_tip_cambio = SimpleHttpOperator(
         task_id='step_sunat_tip_cambio',
         http_conn_id='http_default',  # O el ID de tu conexión HTTP si has configurado una personalizada
