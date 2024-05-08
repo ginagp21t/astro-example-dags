@@ -33,11 +33,17 @@ def get_gcp_token():
     
 def start_process():
     print(" INICIO EL PROCESO!")
+    # Obtener las credenciales predeterminadas de autenticación
     credentials, _ = default()
-    if credentials.id_token:
-    # Extraer el correo electrónico de la cuenta de usuario asociada al token de identificación
-        usuario_gcp = credentials.id_token['email']
-        print("El usuario actual de Google Cloud Platform es:", usuario_gcp)
+
+    # Crear una solicitud de autenticación
+    auth_request = requests.Request()
+
+    # Obtener información sobre el usuario actual
+    userinfo = credentials.service_account_email
+
+    # Imprimir el correo electrónico del usuario actual
+    print("El usuario actual de Google Cloud Platform es:", userinfo)
     print(" INICIO EL PROCESO!")
 
 def end_process():
