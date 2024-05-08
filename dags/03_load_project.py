@@ -60,7 +60,6 @@ with DAG(
 
     step_sunat_tip_cambio = SimpleHttpOperator(
         task_id='step_sunat_tip_cambio',
-        http_conn_id='http_default',  # O el ID de tu conexión HTTP si has configurado una personalizada
         method='POST',
         endpoint='https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
         headers={
