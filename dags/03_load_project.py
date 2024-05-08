@@ -63,7 +63,7 @@ with DAG(
         task_id="step_sunat_tip_cambio",
         ##bash_command="ls -alh --color=always / && echo https://airflow.apache.org/  && echo 'some <code>html</code>'",
         ##bash_command='curl -m 70 -X POST https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio -H "Authorization: bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" '
-        bash_command='echo "El usuario actual de Google Cloud Platform es: $(gcloud auth list --filter=status:ACTIVE --format="value(account)")" '
+        bash_command='gcloud auth list'
     )   
   
     step_raw_tipo_cambio =BigQueryInsertJobOperator(
