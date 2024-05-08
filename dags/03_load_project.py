@@ -50,7 +50,7 @@ with DAG(
         method='POST',
         endpoint='https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio',
         headers={
-            "Authorization": "bearer {{ gcp_token }}",
+            "Authorization": "bearer $(gcloud auth print-identity-token)",
             "Content-Type": "application/json"
         },
         data='{"load_type": "storage","target":"gs://test-nh/tipo_cambio.csv"}'
