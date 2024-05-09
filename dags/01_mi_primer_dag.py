@@ -10,7 +10,7 @@ def start_process():
     print(" INICIO EL PROCESO!")
 
 def load():
-    print(" Hola Airflow!!!!")
+    print(" Hola Airflow! 20240508")
 
 with DAG(
     dag_id="mi_primer_dag", schedule="@once",
