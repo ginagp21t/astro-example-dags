@@ -54,7 +54,7 @@ def load_transaction():
     print(f" INICIO LOAD TRANSACTION")
 
 with DAG(
-    dag_id="load_project",
+    dag_id="load_project_copy",
     schedule="20 04 * * *", 
     start_date=days_ago(1), 
     default_args=default_args
@@ -74,7 +74,7 @@ with DAG(
     step_sunat_tip_cambio = BashOperator(
         task_id="step_sunat_tip_cambio",
         ##bash_command="ls -alh --color=always / && echo https://airflow.apache.org/  && echo 'some <code>html</code>'",
-        bash_command='curl -m 70 -X POST https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio -H "Authorization: bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json"'
+        bash_command='curl -m 70 -X POST https://us-central1-premium-guide-410714.cloudfunctions.net/prd-load_tipo_cambio -H "Authorization: bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" -d '\{"load_type": "storage","target":"gs://test-nh/tipo_cambio.csv"}\''
     )   
   
     step_raw_tipo_cambio =BigQueryInsertJobOperator(
