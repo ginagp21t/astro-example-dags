@@ -1,4 +1,4 @@
-¿from airflow import DAG
+from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 from airflow.operators.http_operator import SimpleHttpOperator
